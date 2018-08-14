@@ -1,4 +1,4 @@
-# kubectl-drain-node
+# kubectl drain node - AWS EC2 Spot - Debian
 
 **AWS EC2 has 3 ways to terminate an instance**
  - [Spot instances Termination](https://aws.amazon.com/pt/blogs/aws/new-ec2-spot-instance-termination-notices/): The Termination Notice is accessible to code running on the instance via the instance’s metadata at http://169.254.169.254/latest/meta-data/spot/termination-time 
