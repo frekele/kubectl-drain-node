@@ -11,3 +11,12 @@
 My script 'a1-kubectl-drain-node' launches a listener in backgroud that ends the instance in advance when she is marked as spot termination through the url  http://169.254.169.254/latest/meta-data/spot/termination-time .
 
 If it is not terminated in advance, it can also be terminated when the instance is already in the process of closing, so it runs the script at level 0 (/etc/rc0.d/K01a1-kubectl-drain-node).
+
+# Install kubectl-drain-node
+```
+curl https://raw.githubusercontent.com/frekele/kubectl-drain-node/master/kubectl-drain-node.sh -o /etc/init.d/a1-kubectl-drain-node && \
+chmod 775 /etc/init.d/a1-kubectl-drain-node && \
+update-rc.d a1-kubectl-drain-node defaults && \
+update-rc.d a1-kubectl-drain-node enable && \
+service a1-kubectl-drain-node start
+```
