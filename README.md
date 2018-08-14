@@ -39,7 +39,10 @@ chmod 755 /root/.kube/aws-cloud
 
 # Install kubectl-drain-node
 ```
-curl https://raw.githubusercontent.com/frekele/kubectl-drain-node/master/kubectl-drain-node.sh -o /etc/init.d/a1-kubectl-drain-node && \
+curl https://github.com/frekele/kubectl-drain-node/releases/download/v1.0.0/kubectl-drain-node.sh -o /tmp/kubectl-drain-node.sh && \
+curl https://github.com/frekele/kubectl-drain-node/releases/download/v1.0.0/kubectl-drain-node.sh.md5 -o /tmp/kubectl-drain-node.sh.md5 && \
+echo "$(cat /tmp/kubectl-drain-node.sh.md5) /tmp/kubectl-drain-node.sh" | md5sum -c && \
+mv /tmp/kubectl-drain-node.sh /etc/init.d/a1-kubectl-drain-node && \
 chmod 775 /etc/init.d/a1-kubectl-drain-node && \
 update-rc.d a1-kubectl-drain-node defaults && \
 update-rc.d a1-kubectl-drain-node enable && \
