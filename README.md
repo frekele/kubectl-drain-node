@@ -23,12 +23,12 @@ service a1-kubectl-drain-node start
 ```
 
 
-# pre requirements
+# Pre-requirements:
 
 ### Install kubectl:
 ```
-K8S_VERSION=v1.11.1 ////(your kubernetes version)
-K8S_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt) //or latest release.
+K8S_VERSION=v1.11.1 //(your kubernetes version).
+K8S_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt) //(or latest release).
 
 curl https://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl -o /tmp/kubectl && \
 curl https://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl.md5 -o /tmp/kubectl.md5 && \
@@ -40,3 +40,10 @@ rm -f /tmp/kubectl.md5 && \
 rm -f /tmp/kubectl.sha1 && \
 chmod +x /usr/local/bin/kubectl
 ```
+
+### Copy your kubeconfig:
+```
+cp your-kubernetes-config /root/.kube/aws-cloud && \
+chmod 755 /root/.kube/aws-cloud
+```
+
