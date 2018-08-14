@@ -13,19 +13,9 @@ My script 'a1-kubectl-drain-node' launches a listener in backgroud that ends the
 If it is not terminated in advance, it can also be terminated when the instance is already in the process of closing, so it runs the script at level 0 (/etc/rc0.d/K01a1-kubectl-drain-node).
 
 
-# Install kubectl-drain-node
-```
-curl https://raw.githubusercontent.com/frekele/kubectl-drain-node/master/kubectl-drain-node.sh -o /etc/init.d/a1-kubectl-drain-node && \
-chmod 775 /etc/init.d/a1-kubectl-drain-node && \
-update-rc.d a1-kubectl-drain-node defaults && \
-update-rc.d a1-kubectl-drain-node enable && \
-service a1-kubectl-drain-node start
-```
-
-
 # Pre-requirements:
 
-### Install kubectl:
+### kubectl:
 ```
 K8S_VERSION=v1.11.1 //(your kubernetes version).
 K8S_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt) //(or latest release).
@@ -47,3 +37,11 @@ cp your-kubernetes-config /root/.kube/aws-cloud && \
 chmod 755 /root/.kube/aws-cloud
 ```
 
+# Install kubectl-drain-node
+```
+curl https://raw.githubusercontent.com/frekele/kubectl-drain-node/master/kubectl-drain-node.sh -o /etc/init.d/a1-kubectl-drain-node && \
+chmod 775 /etc/init.d/a1-kubectl-drain-node && \
+update-rc.d a1-kubectl-drain-node defaults && \
+update-rc.d a1-kubectl-drain-node enable && \
+service a1-kubectl-drain-node start
+```
