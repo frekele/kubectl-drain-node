@@ -23,15 +23,15 @@ K8S_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/
 curl https://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl -o /tmp/kubectl && \
 curl https://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl.md5 -o /tmp/kubectl.md5 && \
 curl https://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl.sha1 -o /tmp/kubectl.sha1 && \
-echo "$(cat kubectl.md5) kubectl" | md5sum -c && \
-echo "$(cat kubectl.sha1) kubectl" | sha1sum -c && \
+echo "$(cat /tmp/kubectl.md5) kubectl" | md5sum -c && \
+echo "$(cat /tmp/kubectl.sha1) kubectl" | sha1sum -c && \
 mv /tmp/kubectl /usr/local/bin/kubectl && \
 rm -f /tmp/kubectl.md5 && \
 rm -f /tmp/kubectl.sha1 && \
 chmod +x /usr/local/bin/kubectl
 ```
 
-### Copy your kubeconfig:
+### kubeconfig:
 ```
 cp your-kubernetes-config /root/.kube/aws-cloud && \
 chmod 755 /root/.kube/aws-cloud
@@ -41,7 +41,9 @@ chmod 755 /root/.kube/aws-cloud
 ```
 curl https://github.com/frekele/kubectl-drain-node/releases/download/v1.0.0/kubectl-drain-node.sh -o /tmp/kubectl-drain-node.sh && \
 curl https://github.com/frekele/kubectl-drain-node/releases/download/v1.0.0/kubectl-drain-node.sh.md5 -o /tmp/kubectl-drain-node.sh.md5 && \
+curl https://github.com/frekele/kubectl-drain-node/releases/download/v1.0.0/kubectl-drain-node.sh.sha1 -o /tmp/kubectl-drain-node.sh.sha1 && \
 echo "$(cat /tmp/kubectl-drain-node.sh.md5) /tmp/kubectl-drain-node.sh" | md5sum -c && \
+echo "$(cat /tmp/kubectl-drain-node.sh.sha1) /tmp/kubectl-drain-node.sh" | sha1sum -c && \
 mv /tmp/kubectl-drain-node.sh /etc/init.d/a1-kubectl-drain-node && \
 chmod 775 /etc/init.d/a1-kubectl-drain-node && \
 update-rc.d a1-kubectl-drain-node defaults && \
