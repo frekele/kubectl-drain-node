@@ -39,9 +39,10 @@ chmod 755 /root/.kube/aws-cloud
 
 # Install kubectl-drain-node
 ```
-curl https://github.com/frekele/kubectl-drain-node/releases/download/v1.0.0/kubectl-drain-node.sh -o /tmp/kubectl-drain-node.sh && \
-curl https://github.com/frekele/kubectl-drain-node/releases/download/v1.0.0/kubectl-drain-node.sh.md5 -o /tmp/kubectl-drain-node.sh.md5 && \
-curl https://github.com/frekele/kubectl-drain-node/releases/download/v1.0.0/kubectl-drain-node.sh.sha1 -o /tmp/kubectl-drain-node.sh.sha1 && \
+KDN_VERSION=v1.11.1
+curl https://github.com/frekele/kubectl-drain-node/releases/download/${KDN_VERSION}/kubectl-drain-node.sh -o /tmp/kubectl-drain-node.sh && \
+curl https://github.com/frekele/kubectl-drain-node/releases/download/${KDN_VERSION}/kubectl-drain-node.sh.md5 -o /tmp/kubectl-drain-node.sh.md5 && \
+curl https://github.com/frekele/kubectl-drain-node/releases/download/${KDN_VERSION}/kubectl-drain-node.sh.sha1 -o /tmp/kubectl-drain-node.sh.sha1 && \
 echo "$(cat /tmp/kubectl-drain-node.sh.md5) /tmp/kubectl-drain-node.sh" | md5sum -c && \
 echo "$(cat /tmp/kubectl-drain-node.sh.sha1) /tmp/kubectl-drain-node.sh" | sha1sum -c && \
 mv /tmp/kubectl-drain-node.sh /etc/init.d/a1-kubectl-drain-node && \
