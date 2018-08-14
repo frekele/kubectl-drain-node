@@ -34,6 +34,7 @@ chmod +x /usr/local/bin/kubectl
 
 ### kubeconfig:
 ```
+mkdir -p /root/.kube && \
 cp your-kubernetes-config /root/.kube/aws-cloud && \
 chmod 755 /root/.kube/aws-cloud
 ```
