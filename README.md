@@ -39,6 +39,8 @@ cp 'your-kubernetes-config' /root/.kube/aws-cloud && \
 chmod 755 /root/.kube/aws-cloud
 ```
 
+It is recommended to install this script when launching the instance with cloud-init.
+
 # Install kubectl-drain-node
 ```
 KDN_VERSION=v1.0.0
