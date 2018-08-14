@@ -10,7 +10,7 @@
 
 This script 'a1-kubectl-drain-node' launches a listener in backgroud that ends the instance in advance when she is marked as spot termination through the url  http://169.254.169.254/latest/meta-data/spot/termination-time .
 
-If it is not terminated in advance, it can also be terminated when the instance is already in the process of closing, so it runs the script at level 0 (/etc/rc0.d/K01a1-kubectl-drain-node).
+If it is not terminated in advance, it can also be terminated when the instance is already in the process of kill, so it runs the script at level 0 (/etc/rc0.d/K01a1-kubectl-drain-node).
 
 [To understand the system runlevel, see here](https://debian-administration.org/article/212/An_introduction_to_run-levels).
 
