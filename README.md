@@ -24,8 +24,8 @@ K8S_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/
 curl https://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl -o /tmp/kubectl && \
 curl https://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl.md5 -o /tmp/kubectl.md5 && \
 curl https://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl.sha1 -o /tmp/kubectl.sha1 && \
-echo "$(cat /tmp/kubectl.md5) kubectl" | md5sum -c && \
-echo "$(cat /tmp/kubectl.sha1) kubectl" | sha1sum -c && \
+echo "$(cat /tmp/kubectl.md5) /tmp/kubectl" | md5sum -c && \
+echo "$(cat /tmp/kubectl.sha1) /tmp/kubectl" | sha1sum -c && \
 mv /tmp/kubectl /usr/local/bin/kubectl && \
 rm -f /tmp/kubectl.md5 && \
 rm -f /tmp/kubectl.sha1 && \
