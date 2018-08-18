@@ -15,6 +15,7 @@
 
 ## For configuration:
 ## Add file 'a1-kubectl-drain-node' into /etc/init.d/
+## chmod 755 /etc/init.d/a1-kubectl-drain-node
 ## systemctl daemon-reload
 ## update-rc.d a1-kubectl-drain-node defaults
 ## update-rc.d a1-kubectl-drain-node enable
@@ -24,6 +25,7 @@
 ## update-rc.d a1-kubectl-drain-node disable
 ## update-rc.d a1-kubectl-drain-node remove
 ## service a1-kubectl-drain-node start|stop|status
+## ps aux | grep spotTerminationBackground
 
 set -e
 
@@ -36,22 +38,29 @@ function spotTerminationBackgroundListener(){
     echo "spotTerminationBackgroundListener Started."
     #Sleep 5 minutes.
     sleep 300
-    
+
     HOSTNAME_FQDN=$(hostname --fqdn)
     KUBE_CONFIG=/root/.kube/aws-cloud
-    KDRAIN_LOGFILE=/var/log/a1-kubectl-drain-node.log
-    
-    kubectl get node ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDRAIN_LOGFILE" 2>&1 | true
+    KDN_LOGFILE=/var/log/a1-kubectl-drain-node.log
+
+    kubectl get node ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDN_LOGFILE" 2>&1 | true
     while true
         do
             if [ -z $(curl -Is http://169.254.169.254/latest/meta-data/spot/termination-time | head -1 | grep 404 | cut -d \  -f 2) ]
                 then
-                    echo "Spot Instance marked for termination!"
-                    kubectl get node ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDRAIN_LOGFILE" 2>&1 | true
-                    kubectl drain ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDRAIN_LOGFILE" 2>&1 | true
-                    kubectl drain ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDRAIN_LOGFILE" 2>&1 | true
-                    kubectl delete node ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDRAIN_LOGFILE" 2>&1 | true
-                    break
+                    sleep 1
+                    #Verify again to be sure.
+                    if [ -z $(curl -Is http://169.254.169.254/latest/meta-data/spot/termination-time | head -1 | grep 404 | cut -d \  -f 2) ]
+                        then
+                            echo "Spot Instance marked for termination!"
+                            kubectl get node ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDN_LOGFILE" 2>&1 | true
+                            kubectl drain ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDN_LOGFILE" 2>&1 | true
+                            #Drain node again for confirmation.
+                            kubectl drain ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDN_LOGFILE" 2>&1 | true
+                            #Delete node into cluster.
+                            kubectl delete node ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDN_LOGFILE" 2>&1 | true
+                            break
+                        fi
                 else
                     #echo "Spot instance not yet marked for termination."
                     sleep 5
@@ -62,29 +71,31 @@ function spotTerminationBackgroundListener(){
 
 HOSTNAME_FQDN=$(hostname --fqdn)
 KUBE_CONFIG=/root/.kube/aws-cloud
-KDRAIN_LOGFILE=/var/log/a1-kubectl-drain-node.log
+KDN_LOGFILE=/var/log/a1-kubectl-drain-node.log
 
 case "$1" in
         start)
-                echo "Starting a1-kubectl-drain-node" >> "$KDRAIN_LOGFILE" 2>&1
-                touch "$KDRAIN_LOGFILE"
-                chown root:root "$KDRAIN_LOGFILE"
+                echo "Starting a1-kubectl-drain-node" >> "$KDN_LOGFILE" 2>&1
+                touch "$KDN_LOGFILE"
+                chown root:root "$KDN_LOGFILE"
                 export -f spotTerminationBackgroundListener
-                nohup bash -c spotTerminationBackgroundListener >> "$KDRAIN_LOGFILE" 2>&1 &
-                echo "Started a1-kubectl-drain-node" >> "$KDRAIN_LOGFILE" 2>&1
+                nohup bash -c spotTerminationBackgroundListener >> "$KDN_LOGFILE" 2>&1 &
+                echo "Started a1-kubectl-drain-node" >> "$KDN_LOGFILE" 2>&1
                 ;;
 
         stop)
-                echo "Stoping a1-kubectl-drain-node" >> "$KDRAIN_LOGFILE" 2>&1
-                kubectl get node ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDRAIN_LOGFILE" 2>&1 | true
-                kubectl drain ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDRAIN_LOGFILE" 2>&1 | true
-                kubectl drain ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDRAIN_LOGFILE" 2>&1 | true
-                kubectl delete node ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDRAIN_LOGFILE" 2>&1 | true
-                echo "Stopped a1-kubectl-drain-node" >> "$KDRAIN_LOGFILE" 2>&1
+                echo "Stoping a1-kubectl-drain-node" >> "$KDN_LOGFILE" 2>&1
+                kubectl get node ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDN_LOGFILE" 2>&1 | true
+                kubectl drain ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDN_LOGFILE" 2>&1 | true
+                #Drain node again for confirmation.
+                kubectl drain ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDN_LOGFILE" 2>&1 | true
+                #Delete node into cluster.
+                kubectl delete node ${HOSTNAME_FQDN} --kubeconfig=${KUBE_CONFIG} --insecure-skip-tls-verify=true >> "$KDN_LOGFILE" 2>&1 | true
+                echo "Stopped a1-kubectl-drain-node" >> "$KDN_LOGFILE" 2>&1
                 ;;
 
         status)
-                echo "Status a1-kubectl-drain-node" >> "$KDRAIN_LOGFILE" 2>&1
+                echo "Status a1-kubectl-drain-node" >> "$KDN_LOGFILE" 2>&1
                 ;;
 
         *)
