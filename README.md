@@ -18,7 +18,7 @@ If it is not terminated in advance, it can also be terminated when the instance 
 
 ### kubectl:
 ```
-K8S_VERSION=v1.11.1 //(your kubernetes version).
+K8S_VERSION=v1.11.2 //(your kubernetes version).
 K8S_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt) //(or latest release).
 
 curl https://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl -o /tmp/kubectl && \
